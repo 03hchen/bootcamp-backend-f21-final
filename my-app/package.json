@@ -1,5 +1,5 @@
 {
-  "name": "bootcamp-f21-backend-final",
+  "name": "my-app",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,12 +8,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "dotenv": "^10.0.0",
-    "mongodb": "^4.1.4",
-    "mongoose": "^6.0.12",
-    "next": "^12.0.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "next": "12.0.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
     "eslint": "7",
