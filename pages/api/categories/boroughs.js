@@ -1,9 +1,8 @@
-import mongo from '../../server/mongo'
+import mongo from '../../../server/mongo'
 
 export default async function handler(req, res) {
   const db = await mongo()
-  const boroughs = db.collection('boroughs')
-  const results = await boroughs.findOne()
-  console.log(results)
+  const restaurants = await db.collection('restaurants')
+  const results = await restaurants.distinct('borough')
   res.status(200).json(results)
 }
