@@ -6,11 +6,11 @@ export default async function handler(req, res) {
   const restaurants = await db.collection('restaurants')
 
   // filtering 
-  const cuisine = req.query.cuisine
-  const borough = req.query.borough
-  let filter = cuisine ? {cuisine: {$eq: req.query.cuisine}} : {}
-  filter = borough ? {borough: {$eq: req.query.borough}} : filter
-  filter = (cuisine && borough) ? {cuisine: {$eq: req.query.cuisine}, borough: {$eq: req.query.borough}} : filter
+  const cuisineInput = req.query.cuisine
+  const boroughInput = req.query.borough
+  let filter = {}
+  cuisineInput ? Object.assign(filter, {cuisine: {$eq: cuisineInput}}) : {}
+  boroughInput ? Object.assign(filter, {borough: {$eq: boroughInput}}) : {}
 
   // sorting
   const order = req.query.sort_by
@@ -21,6 +21,13 @@ export default async function handler(req, res) {
   let pageSize = parseInt(req.query['page_size'])
   if (page == undefined || isNaN(page)) page = 1
   if (pageSize == undefined || isNaN(pageSize)) pageSize = 10
+
+  // extension 1 - geometry of neighborhood
+  const neighborhood = req.query.neighborhood
+  const neighborhoods = await db.collection('neighborhoods')
+  const nbhd = await neighborhoods.find({name: neighborhood}).toArray()
+  neighborhood ? Object.assign(filter, { 'address.coord' : { $geoWithin: { $geometry: { type: 'Polygon', coordinates: [nbhd[0].geometry.coordinates[0]] } } } }) : {}
+
 
   const results = await restaurants.find(filter)
     .sort({'grades.0.score' : sortOption, 'name': 1, 'cuisine' : 1, 'borough': 1})
