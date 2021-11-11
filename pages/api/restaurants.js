@@ -14,7 +14,8 @@ export default async function handler(req, res) {
 
   // sorting
   const order = req.query.sort_by
-  const sortOption = order === "grades.asc" ? 1 : -1
+  let sorter = {}
+  order ? Object.assign(sorter, {'grades.0.score': order === "grades.asc" ? 1 : -1}): {}
 
   // pagination
   let page = parseInt(req.query.page)
@@ -30,7 +31,7 @@ export default async function handler(req, res) {
 
 
   const results = await restaurants.find(filter)
-    .sort({'grades.0.score' : sortOption, 'name': 1, 'cuisine' : 1, 'borough': 1})
+    .sort(sorter)
     .skip((page-1) * pageSize)
     .limit(pageSize)
     .toArray()
